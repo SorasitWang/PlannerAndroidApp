@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.planner.EventProperty
 import com.example.planner.databinding.GridViewItemBinding
 
 class EventAdapter : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHolder>(DiffCallback) {
@@ -26,14 +27,14 @@ class EventAdapter : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHo
         }
     }
 
-    override fun onBindViewHolder(holder: EventAdapter.EventPropertyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EventPropertyViewHolder, position: Int) {
         val marsProperty = getItem(position)
         holder.bind(marsProperty)
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,viewType: Int):
-            EventAdapter.EventPropertyViewHolder {
+            EventPropertyViewHolder {
         return EventPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 }

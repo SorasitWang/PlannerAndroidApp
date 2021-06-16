@@ -3,4 +3,6 @@
     <dimen name="medium_dis">16dp</dimen>
     <dimen name="small_dis">8dp</dimen>
     <dimen name="title_text">30sp</dimen>
+    <dimen name="title_event">24sp</dimen>
+    <dimen name="detail_event">16sp</dimen>
 </resources>

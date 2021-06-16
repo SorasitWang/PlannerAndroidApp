@@ -1,13 +1,16 @@
 package com.example.planner
 
-import android.database.DatabaseUtils
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.example.planner.EventViewModel
 import com.example.planner.databinding.FragmentOverviewBinding
 import com.example.planner.R
 
@@ -36,9 +39,30 @@ class overviewFragment : Fragment() {
         // Inflate the layout for this fragment
         binding  = DataBindingUtil.inflate(inflater, R.layout.fragment_overview, container, false)
         binding.lifecycleOwner = this
-        binding.recycleView.adapter = EventAdapter()
-        viewModel = ViewModelProviders.of(this).get(EventViewModel::class.java)
+
+        val application = requireNotNull(this.activity).application
+
+        val dataSource = EventDatabase.getInstance(application).sleepDatabaseDao
+
+        val viewModelFactory = EventViewModelFactory(dataSource, application)
+
+        val viewModel =
+            ViewModelProvider(
+                this, viewModelFactory).get(EventViewModel::class.java)
+
         binding.viewModel = viewModel
+        val adapter = EventAdapter()
+        binding.recycleView.adapter = EventAdapter()
+
+        binding.addBtn.setOnClickListener{
+
+        }
+        /*viewModel.events.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                adapter.submitList(it)
+            }
+        })*/
+
         setUp()
 
         return binding.root
