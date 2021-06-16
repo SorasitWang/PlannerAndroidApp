@@ -11,7 +11,9 @@ import kotlinx.coroutines.withContext
 class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidViewModel(app)  {
     private val _months = listOf<String>("January","February","March","April ","May","June","July","August","September","October","November","December")
     private val _types = listOf<String>("Info","Warning","Emergency")
-    //lateinit var events :  LiveData<List<EventProperty?>>
+
+
+    var events = database.getByMonth(0,0)
 
     private val _year = MutableLiveData<Int>()
     val year : LiveData<Int>
@@ -29,21 +31,33 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
 
     init{
         Log.i("EventViewModel","init")
-        _year.value = 2021
-        _month.value = 5
+        _year.value = 0
+        _month.value = 0
         _type.value = 0
+        var tmp = EventProperty()
+        tmp.year = 0
+        tmp.month = 0
         viewModelScope.launch {
-            getEvent()
+            database.insert(tmp)
+            getEvent(_month.value!!, _type.value!!)
+
         }
 
     }
-    private suspend fun getEvent() {
+    private suspend fun getEvent(m : Int , y : Int){
         withContext(Dispatchers.IO) {
-            //events = database.getByMonth(_month.value!!, _year.value!!)
+            events = database.getByMonth(m,y)
+            if (events == null)  {
+                Log.i("adapter","null")
+            }
         }
         //use those value to filtering
     }
-
+    public suspend fun insert(night: EventProperty) {
+        withContext(Dispatchers.IO) {
+            database.insert(night)
+        }
+    }
     fun nextMonth(){
         _month.value = _month.value!!.plus(1)%12
     }
@@ -56,4 +70,5 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     fun prevType(){
         _type.value = _type.value!!.minus(1).plus(3)%3
     }
+
 }

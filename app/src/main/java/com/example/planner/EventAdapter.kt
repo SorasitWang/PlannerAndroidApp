@@ -1,12 +1,14 @@
 package com.example.planner
 
+import android.R.attr.data
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.planner.EventProperty
 import com.example.planner.databinding.GridViewItemBinding
+
 
 class EventAdapter : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHolder>(DiffCallback) {
 
@@ -19,6 +21,7 @@ class EventAdapter : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHo
             return oldItem.id == newItem.id
         }
     }
+
     class EventPropertyViewHolder(private var binding: GridViewItemBinding):
         RecyclerView.ViewHolder(binding.root) {
         fun bind(eventProperty: EventProperty) {
@@ -28,13 +31,23 @@ class EventAdapter : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHo
     }
 
     override fun onBindViewHolder(holder: EventPropertyViewHolder, position: Int) {
-        val marsProperty = getItem(position)
-        holder.bind(marsProperty)
+        val eventProperty = getItem(position)
+        Log.i("adapter", "bind")
+        holder.bind(eventProperty)
+
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup,viewType: Int):
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
             EventPropertyViewHolder {
-        return EventPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)))
+        Log.i("adapter", "create")
+        return EventPropertyViewHolder(
+            GridViewItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 }

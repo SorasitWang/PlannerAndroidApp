@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = [EventProperty::class], version = 1, exportSchema = false)
+@Database(entities = [EventProperty::class], version = 2, exportSchema = false)
 abstract class EventDatabase : RoomDatabase() {
 
     /**

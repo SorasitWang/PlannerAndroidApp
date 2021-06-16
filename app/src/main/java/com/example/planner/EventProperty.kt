@@ -15,7 +15,7 @@ data class EventProperty(
     val cat: String = "All",
 
     @ColumnInfo(name = "type")
-    val type: String = "Default",
+    val type: Int = 0,
 
     @ColumnInfo(name = "title")
     val title: String = "TITLE",
@@ -27,7 +27,7 @@ data class EventProperty(
     val day: Int = -1,
 
     @ColumnInfo(name = "month")
-    val month: Int = -1,
+    var month: Int = 0,
 
     @ColumnInfo(name = "year")
-    val year: Int = -1)
+    var year: Int = 0)
