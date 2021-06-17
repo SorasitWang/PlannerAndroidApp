@@ -19,6 +19,7 @@ package com.example.planner
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import org.w3c.dom.Text
 
 
 @BindingAdapter("typeImage")
@@ -33,7 +34,12 @@ fun ImageView.setEventImage(item: EventProperty) {
 @BindingAdapter("deadlineFormatted")
 fun TextView.setDeadlineFormatted(item: EventProperty?) {
     item?.let {
-        text = "{item.day} /  {item.month} / {item.year}"
+        text = "${item.day} /  ${item.month} / ${item.year}"
     }
+}
+
+@BindingAdapter("toString")
+fun TextView.intToString(data : Int){
+    text = data.toString()
 }
 

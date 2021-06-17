@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/medium_dis"
         android:layout_marginTop="@dimen/medium_dis"
         android:layout_marginRight="@dimen/medium_dis">
@@ -22,12 +22,13 @@
             android:layout_marginStart="@dimen/small_dis"
             android:layout_marginTop="@dimen/small_dis"
             android:layout_marginEnd="@dimen/small_dis"
-
+            app:deadlineFormatted="@{property}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="0/0/2021" />
 
         <TextView
             android:id="@+id/title_text"
@@ -40,13 +41,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Title" />
 
         <TextView
             android:id="@+id/detail_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_dis"
             android:layout_marginTop="@dimen/medium_dis"
+            android:layout_marginEnd="@dimen/small_dis"
+            android:layout_marginBottom="@dimen/small_dis"
             android:text="@{property.detail}"
             android:textSize="@dimen/detail_event"
             app:layout_constraintBottom_toBottomOf="@+id/date_text"
@@ -57,18 +62,28 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="114dp"
-            android:layout_height="117dp"
+            android:layout_width="88dp"
+            android:layout_height="83dp"
             android:layout_marginStart="@dimen/small_dis"
             android:layout_marginEnd="84dp"
             android:layout_marginBottom="8dp"
-
             app:layout_constraintBottom_toTopOf="@+id/date_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:typeImage="@{property}"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/id_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_dis"
+            android:layout_marginEnd="@dimen/small_dis"
+            app:toString="@{property.id}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

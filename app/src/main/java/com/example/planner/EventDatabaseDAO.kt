@@ -17,6 +17,7 @@ package com.example.planner
  */
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -37,10 +38,10 @@ interface EventDatabaseDAO {
     suspend fun update(night: EventProperty)
 
     @Query("SELECT * FROM event_table WHERE month = :month AND year = :year ORDER BY day ASC")
-    fun getByMonth(month: Int , year : Int): LiveData<List<EventProperty>>
+    suspend fun getByMonth(month: Int , year : Int): List<EventProperty>
 
     @Query("SELECT * FROM event_table WHERE month = :month AND year = :year AND category = :cat ORDER BY day ASC")
-    fun getByCat(month: Int , year : Int,cat : String): LiveData<List<EventProperty>>
+    suspend fun getByCat(month: Int , year : Int,cat : Int): List<EventProperty>
 
     @Query("DELETE FROM event_table WHERE month = :month AND year = :year")
     suspend fun clearMonth(month : Int , year : Int)
@@ -48,6 +49,8 @@ interface EventDatabaseDAO {
     @Query("DELETE FROM event_table WHERE id = :id")
     fun deleteEvent(id : Int)
 
+    @Query("DELETE FROM event_table")
+    suspend fun clearAll()
 
 }
 

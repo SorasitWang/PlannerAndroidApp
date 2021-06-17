@@ -9,22 +9,22 @@ enum class TypeEvent { INFO, WARN, EMER }
 @Entity(tableName = "event_table")
 data class EventProperty(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    var id: Int = 0,
 
     @ColumnInfo(name = "category")
-    val cat: String = "All",
+    var cat: Int = 0,
 
     @ColumnInfo(name = "type")
-    val type: Int = 0,
+    var type: Int = 0,
 
     @ColumnInfo(name = "title")
-    val title: String = "TITLE",
+    var title: String = "TITLE",
 
     @ColumnInfo(name = "detail")
-    val detail: String = "...",
+    var detail: String = "...",
 
     @ColumnInfo(name = "day")
-    val day: Int = -1,
+    var day: Int = -1,
 
     @ColumnInfo(name = "month")
     var month: Int = 0,
