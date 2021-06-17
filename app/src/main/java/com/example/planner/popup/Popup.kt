@@ -24,7 +24,7 @@ public class Popup : Activity() {
 
     lateinit var popUp : PopupWindow
     lateinit var layout : FrameLayout
-
+    //lateinit var binding : AddEventBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +35,24 @@ public class Popup : Activity() {
         layout = FrameLayout(this)
         val ds = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(ds)
-
+        setUp()
         val width = ds.widthPixels
         val height = ds.heightPixels
 
         window.setLayout((width * 0.8).toInt(), (height * 0.5).toInt())
     }
+
+    fun setUp(){
+        Log.i("popup","Setup")
+        val addBar = findViewById<SeekBar>(R.id.day_bar)
+        addBar.setMax(31)
+        addBar.setProgress(15)
+
+
     }
+
+}
+
 /*
         // layout = new LinearLayout(this);
         val bundle = intent.extras

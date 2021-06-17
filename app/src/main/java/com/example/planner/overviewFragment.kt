@@ -113,6 +113,7 @@ class overviewFragment : Fragment() {
 
         binding.rightBtnMonth.setImageResource(R.drawable.right_arrow)
         binding.rightBtnType.setImageResource(R.drawable.right_arrow)
+
     }
 
 }
