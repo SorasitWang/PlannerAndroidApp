@@ -11,8 +11,12 @@ import kotlinx.coroutines.withContext
 
 class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidViewModel(app)  {
     private val _months = listOf<String>("January","February","March","April ","May","June","July","August","September","October","November","December")
+    val months : List<String>
+        get() = _months
     private val _cats = listOf<String>("Default")
     private val _types = listOf<String>("Info","Warning","Emergency")
+    val types : List<String>
+        get() = _types
 
     private val _year = MutableLiveData<Int>()
     val year : LiveData<Int>

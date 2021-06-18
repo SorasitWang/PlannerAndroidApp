@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/popupBg"
-    android:background="@android:color/transparent"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.planner.popup.PopupViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@android:color/darker_gray"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_dis"
-            android:text="TextView"
+            android:text="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_title_text" />
@@ -42,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button"
+
             app:layout_constraintBaseline_toBaselineOf="@+id/sunmit_add_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -68,10 +69,11 @@
             app:layout_constraintTop_toBottomOf="@+id/day_bar">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/prevMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_dis"
+                android:onClick="@{()->viewModel.prevMonth()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -79,26 +81,27 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/showMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_dis"
-                android:text="TextView"
+                android:text="@{viewModel.month}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+                app:layout_constraintEnd_toStartOf="@+id/nextMonth"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintStart_toEndOf="@+id/prevMonth"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/nextMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/small_dis"
+                android:onClick="@{()->viewModel.nextMonth()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/imageButton"
+                app:layout_constraintStart_toStartOf="@+id/prevMonth"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -146,39 +149,41 @@
             app:layout_constraintTop_toBottomOf="@+id/add_month_layout">
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/prevYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/small_dis"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:onClick="@{()->viewModel.prevYear()}"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/showYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+               android:text="viewModel.year"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton4"
+                app:layout_constraintEnd_toStartOf="@+id/nextYear"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageButton3"
+                app:layout_constraintStart_toEndOf="@+id/prevYear"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/nextYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/small_dis"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:onClick="@{()->viewModel.nextYear()}"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/imageButton3"
+                app:layout_constraintStart_toEndOf="@+id/prevYear"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey
 
 enum class TypeEvent { INFO, WARN, EMER }
 
+
 @Entity(tableName = "event_table")
 data class EventProperty(
+
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
 
