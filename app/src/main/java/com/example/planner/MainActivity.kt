@@ -15,8 +15,6 @@ import com.example.planner.databinding.FragmentOverviewBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var popup: PopupWindow
-    private lateinit var binding : FragmentOverviewBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

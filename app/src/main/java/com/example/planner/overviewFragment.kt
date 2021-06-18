@@ -1,25 +1,23 @@
 package com.example.planner
 
-import android.content.Context
-import android.content.Intent
+import android.os.Build
+import com.example.planner.R
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.planner.databinding.FragmentOverviewBinding
 import com.example.planner.popup.Popup
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -34,21 +32,30 @@ private const val ARG_PARAM2 = "param2"
  */
 class overviewFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    lateinit var binding : FragmentOverviewBinding
-    private lateinit var viewModel : EventViewModel
-    private lateinit var popUpView : Popup
+    private val binding: FragmentOverviewBinding by lazy {
+        FragmentOverviewBinding.inflate(
+            layoutInflater
+        )
+    }
+    private lateinit var viewModel: EventViewModel
+    private lateinit var popUpView: Popup
+    lateinit var popUp : PopupWindow
+    lateinit var layout : FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            }
 
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        binding  = FragmentOverviewBinding.inflate(inflater)
+
+        binding.rootLayout.foreground.alpha = 0
         binding.lifecycleOwner = this
 
         val application = requireNotNull(this.activity).application
@@ -65,10 +72,10 @@ class overviewFragment : Fragment() {
         binding.viewModel = viewModel
         var adapter = EventAdapter()
         binding.recycleView.adapter = adapter
-        val manager = GridLayoutManager(activity, 1)
+        val manager = GridLayoutManager(this.activity, 1)
         binding.recycleView.layoutManager = manager
 
-        binding.addBtn.setOnClickListener{
+        binding.addBtn.setOnClickListener {
 
         }
         viewModel.updating.observe(viewLifecycleOwner, Observer {
@@ -85,11 +92,29 @@ class overviewFragment : Fragment() {
         viewModel.openAddView.observe(viewLifecycleOwner, Observer {
 
             //MainActivity.onClick()
-            Log.i("adapter", "clcikAdd")
-            /*val ds = DisplayMetrics()*/
-            val i = Intent(this.activity,Popup::class.java)
-            startActivity(i)
+            Log.i("adapter", "clickAdd")
+            val popupContentView: View =   LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
+            popUp = PopupWindow(activity!!)
+            layout = FrameLayout(activity!!)
+            popUp.contentView = popupContentView
+            binding.rootLayout.foreground.alpha = 220
+            popUp.setOutsideTouchable(true);
+            popUp.setOnDismissListener {
+                binding.rootLayout.foreground.alpha = 0
+            }
+            popUp.showAtLocation(view, Gravity.CENTER, 0, 0)
+
             /*
+            val ds = DisplayMetrics()
+            activity!!.windowManager.defaultDisplay.getMetrics(ds)
+            setUp()
+            val width = ds.widthPixels
+            val height = ds.heightPixels
+            activity!!.getWindow().setLayout((width * 0.8).toInt(), (height * 0.5).toInt())
+            *//*val ds = DisplayMetrics()
+            val i = Intent(this,Popup::class.java)
+            startActivity(i)
+
             if (it == true) {
                 val intent = Intent(activity, PopupWindow::class.java)
                 intent.putExtra("popuptitle", "Error")
@@ -98,14 +123,11 @@ class overviewFragment : Fragment() {
                 intent.putExtra("darkstatusbar", false)
                 startActivity(intent)
             }*/
-       })
+        })
 
         setUp()
-
         return binding.root
     }
-
-
 
     fun setUp(){
         binding.leftBtnMonth.setImageResource(R.drawable.left_arrow)

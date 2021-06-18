@@ -3,6 +3,7 @@ package com.example.planner.popup
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -16,13 +17,26 @@ import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import com.example.planner.R
+import com.example.planner.databinding.FragmentOverviewBinding
 import kotlinx.android.synthetic.main.add_event.*
 
-public class Popup : Activity() {
+public class Popup : AppCompatActivity() {
+    /*private val binding : FragmentOverviewBinding by lazy {FragmentOverviewBinding.inflate(layoutInflater)}
+   override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.add_event)
+        var mBuilder = AlertDialog.Builder(this)
+        var mView = layoutInflater.inflate(R.layout.add_event,null)
+        mBuilder.setView(mView)
+    }
 
+    override fun onCreateView( inflater: LayoutInflater,  container: ViewGroup?, savedInstanceState: Bundle?)   {
+
+    }*/
+}
     //PopupWindow display method
 
-    lateinit var popUp : PopupWindow
+   /* lateinit var popUp : PopupWindow
     lateinit var layout : FrameLayout
     //lateinit var binding : AddEventBinding
 
@@ -51,7 +65,7 @@ public class Popup : Activity() {
 
     }
 
-}
+}*/
 
 /*
         // layout = new LinearLayout(this);

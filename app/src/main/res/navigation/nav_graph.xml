@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/overviewFragment4">
+    app:startDestination="@id/overviewFragment">
+
     <fragment
-        android:id="@+id/overviewFragment4"
+        android:id="@+id/overviewFragment"
         android:name="com.example.planner.overviewFragment"
-        android:label="overviewFragment"
-        tools:layout="@layout/fragment_overview"/>
+        android:label="overviewFragment" />
 </navigation>
