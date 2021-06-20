@@ -67,6 +67,10 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     val setDate : LiveData<Boolean>
         get() = _setDate
 
+    private var _updating = MutableLiveData<Boolean>()
+    val updating : LiveData<Boolean>
+        get() = _updating
+
     init {
         Log.i("popup","init")
         _month.value = currentMonth  //Calendar.MONTH
@@ -140,7 +144,28 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
         }
         viewModelScope.launch {
             database.insert(tmp)
+            _updating.value = true
         }
+    }
+    fun update(popup : View,id:Int){
+        Log.i("database","update")
+        var tmp = EventProperty()
+        tmp.apply {
+            title =  popup.add_title_text.text.toString()
+            detail = popup.add_detail_text.text.toString()
+            type = popup.add_type.selectedItemPosition
+            day = popup.day_show_text.text.toString().toInt()
+            month = months.indexOf(popup.showMonth.text.toString())
+            year = popup.showYear.text.toString().toInt()
+        }
+        tmp.id = id
+        viewModelScope.launch {
+            database.update(tmp)
+            _updating.value = true
+        }
+    }
+    fun finishedUpdate(){
+        _updating.value = false
     }
     fun onGetById(id :Int) {
         viewModelScope.launch{

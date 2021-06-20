@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.planner.EventProperty
 import kotlinx.android.synthetic.main.add_event.view.*
+import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
 class Popup(
@@ -87,7 +88,6 @@ class Popup(
                 dayBar.setProgress(0)
                 dayShow.text = offset.toString()
 
-
                 popupModel.finishedChangeM()
             }
         })
@@ -105,26 +105,48 @@ class Popup(
         //set Submit button
         popupContentView.sunmit_add_btn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                popupModel.insert(popupContentView)
+                if (event==null) {
+                    popupModel.insert(popupContentView)
+                }
+                else{
+                    popupModel.update(popupContentView,event.id)
+                }
+            }
+        })
+        popupModel.updating.observe(viewLifecycleOwner, Observer {
+            if (it==true){
                 popup.dismiss()
             }
         })
-        if (event!= null){
-            setDefaultValue(event,popupContentView,popupModel)
-        }
+        setDefaultValue(event,popupContentView,popupModel,popupContentView)
 
-        //set Type dropdown
-        popupContentView.add_type.setSelection(0)
+
+
 
     }
 
-    fun setDefaultValue(event:EventProperty,view:View,model:PopupViewModel){
-        view.apply {
-            add_title_text.setText(event.title)
-            add_detail_text.setText(event.detail)
-        }
-        model.setDate(event.day,event.month,event.year)
+    fun setDefaultValue(event: EventProperty?, view:View, model:PopupViewModel,popupContentView:View){
+        if (event == null){
+            Log.i("adpa","null")
+            val curMonth = Calendar.getInstance().time.month
+            val curYear = Calendar.getInstance().time.year + 1900
+            val curDay = Calendar.getInstance().time.date
 
+            view.apply {
+                add_title_text.setText(null)
+                add_detail_text.setText(null)
+            }
+            model.setDate(curDay, curMonth, curYear)
+            popupContentView.add_type.setSelection(0)
+        }
+        else {
+            view.apply {
+                add_title_text.setText(event.title)
+                add_detail_text.setText(event.detail)
+            }
+            model.setDate(event.day, event.month, event.year)
+            popupContentView.add_type.setSelection(event.type)
+        }
     }
 
     //set Edit button

@@ -17,6 +17,7 @@ import com.example.planner.popup.PopupViewModel
 import kotlinx.android.synthetic.main.add_event.view.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
 import kotlinx.android.synthetic.main.grid_view_item.view.*
+import java.io.ObjectStreamException
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -84,6 +85,7 @@ class overviewFragment : Fragment() {
                 viewModel.finishedUpdate()
             }
         })
+
         viewModel.openAddView.observe(viewLifecycleOwner, Observer {
             //MainActivity.onClick()
             if (it == true) {
@@ -116,6 +118,15 @@ class overviewFragment : Fragment() {
         popupView.popup.setOnDismissListener {
             binding.rootLayout.foreground.alpha = 0
         }
+        popupModel.updating.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                viewModel.events?.let {
+                    Log.i("adapter", "detectUpdate")
+                    viewModel.updateFilter()
+                }
+                popupModel.finishedUpdate()
+            }
+        })
         setupOverview()
         return binding.root
     }
@@ -135,19 +146,20 @@ class overviewFragment : Fragment() {
     fun setupPopup(viewModel : EventViewModel, database : EventDatabaseDAO,id:Int) {
         if (id != -1){
             popupModel.onGetById(id)
+
         }
         else{
             popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,null)
-
             }
         popupModel.eventId.observe(viewLifecycleOwner, Observer {
-            popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,
-                popupModel.eventId.value!!
-            )
+            if (it.id == id) {
+                popupView = Popup(
+                    popupModel, popupContentView, viewLifecycleOwner, context, activity!!,
+                    popupModel.eventId.value!!
+                )
+            }
         })
-        popupView.popup.setOnDismissListener {
-            binding.rootLayout.foreground.alpha = 0
-        }
+
 
 
     }

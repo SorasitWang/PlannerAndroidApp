@@ -35,7 +35,7 @@ interface EventDatabaseDAO {
     suspend fun insert(night: EventProperty)
 
     @Update
-    suspend fun update(night: EventProperty)
+    suspend fun update(night:EventProperty)
 
     @Query("SELECT * FROM event_table WHERE month = :month AND year = :year ORDER BY day ASC")
     suspend fun getByMonth(month: Int , year : Int): List<EventProperty>
