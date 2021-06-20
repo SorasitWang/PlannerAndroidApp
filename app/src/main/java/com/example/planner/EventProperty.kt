@@ -33,3 +33,9 @@ data class EventProperty(
 
     @ColumnInfo(name = "year")
     var year: Int = 0)
+
+@Entity(tableName = "cat_table")
+data class Category(
+    @PrimaryKey(autoGenerate = false)
+    var cat : String = ""
+)

@@ -57,3 +57,17 @@ interface EventDatabaseDAO {
 
 }
 
+@Dao
+interface CatDatabaseDAO {
+
+    @Insert
+    suspend fun insert(cat: Category)
+
+    @Query("SELECT * FROM cat_table")
+    suspend fun getAll() : List<Category>
+
+    @Query("DELETE FROM cat_table WHERE cat = :cat")
+    suspend fun delete(cat:String)
+
+}
+

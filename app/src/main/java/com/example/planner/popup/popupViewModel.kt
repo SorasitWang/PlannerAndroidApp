@@ -9,9 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
-import com.example.planner.EventDatabaseDAO
-import com.example.planner.EventProperty
-import com.example.planner.EventViewModel
+import com.example.planner.*
 import com.example.planner.databinding.AddEventBinding
 import kotlinx.android.synthetic.main.add_event.view.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
@@ -30,6 +28,8 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     val currentMonth = Calendar.getInstance().time.month
     val currentYear = Calendar.getInstance().time.year + 1900
     val currentDay = Calendar.getInstance().time.date
+
+    lateinit var catDatabase : CatDatabaseDAO
 
     private val _day = MutableLiveData<Int>()
     val day : LiveData<Int>
@@ -71,8 +71,14 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     val updating : LiveData<Boolean>
         get() = _updating
 
+    private var _allCat = MutableLiveData<List<Category>>()
+    val allCat : LiveData<List<Category>>
+        get() = _allCat
+
     init {
-        Log.i("popup","init")
+
+        catDatabase = EventDatabase.getInstance(app).catDatabaseDao
+        //onInsertCat("Default")
         _month.value = currentMonth  //Calendar.MONTH
         _year.value = currentYear //Calendar.YEAR
         _day.value = currentDay
@@ -188,6 +194,31 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     fun finishedSetDate(){
         _setDate.value = false
     }
+    fun onGetAllCat() {
+        viewModelScope.launch {
+            getAllCat()
+        }
+    }
+    suspend fun getAllCat(){
+        var tmp : List<Category>
+        withContext(Dispatchers.IO){
+            tmp = catDatabase.getAll()
+        }
+        _allCat.value = tmp
+    }
+
+    fun onInsertCat(cat:String){
+        viewModelScope.launch {
+            insertCat(cat)
+        }
+    }
+    suspend fun insertCat(cat:String){
+        withContext(Dispatchers.IO){
+            catDatabase.insert(Category(cat))
+        }
+
+    }
+
 
 
 }

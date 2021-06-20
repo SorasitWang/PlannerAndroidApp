@@ -9,6 +9,8 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.example.planner.Category
+import com.example.planner.EventDatabaseDAO
 import com.example.planner.EventProperty
 import kotlinx.android.synthetic.main.add_event.view.*
 import java.util.*
@@ -92,16 +94,40 @@ class Popup(
             }
         })
 
-        //set spinner
-        val spinner: Spinner = popupContentView.add_type
+        //set type spinner
+        val typeSpinner: Spinner = popupContentView.add_type
         var typeList: Array<String> = arrayOf<String>("Info", "Warning", "Emergency")
 
         val adapterType: ArrayAdapter<String> = ArrayAdapter<String>(
             context!!, android.R.layout.simple_expandable_list_item_1, typeList
         )
-        spinner.setAdapter(adapterType)
+        typeSpinner.setAdapter(adapterType)
 
+        //set cat spinner
+        val catSpinner: Spinner = popupContentView.select_cat
+        popupModel.onGetAllCat()
+        popupModel.allCat.observe(viewLifecycleOwner, Observer {
+            var catListtmp: Array<Category> = it.toTypedArray()
+            var catList = Array(catListtmp.size){""}
+            for (i in 0..(catListtmp.size-1)){
+                catList[i] = catListtmp[i].cat
+            }
+            val adapterCat: ArrayAdapter<String> = ArrayAdapter<String>(
+                context!!, android.R.layout.simple_expandable_list_item_1, catList
+            )
+            catSpinner.setAdapter(adapterCat)
+        })
 
+        //set add new cat button
+        var addCat = false
+        popupContentView.add_cat_btn.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View?) {
+                addCat = true
+                popupContentView.add_cat.visibility = View.VISIBLE
+                popupContentView.select_cat.visibility = View.GONE
+            }
+
+        })
         //set Submit button
         popupContentView.sunmit_add_btn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {

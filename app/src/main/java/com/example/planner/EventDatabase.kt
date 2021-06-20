@@ -15,13 +15,15 @@ import androidx.room.RoomDatabase
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  */
-@Database(entities = [EventProperty::class], version = 1, exportSchema = false)
+@Database(entities = [EventProperty::class,Category::class], version = 2, exportSchema = false)
 abstract class EventDatabase : RoomDatabase() {
 
     /**
      * Connects the database to the DAO.
      */
     abstract val sleepDatabaseDao: EventDatabaseDAO
+    abstract val catDatabaseDao: CatDatabaseDAO
+
 
     /**
      * Define a companion object, this allows us to add functions on the SleepDatabase class.
@@ -41,6 +43,7 @@ abstract class EventDatabase : RoomDatabase() {
          */
         @Volatile
         private var INSTANCE: EventDatabase? = null
+
 
         /**
          * Helper function to get the database.
