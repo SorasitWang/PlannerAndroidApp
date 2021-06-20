@@ -47,31 +47,9 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     init{
         Log.i("EventViewModel","init")
         _month.value = 0
-        _year.value = 0
+        _year.value = 2021
         _type.value = 0
         _cat.value = 0
-        var tmp = EventProperty()
-        tmp.year = 0
-        tmp.month = 1
-        tmp.type = 2
-        tmp.title = "Hello"
-
-        var tmp2 = EventProperty()
-        tmp2.apply{
-            year = 0
-            month = 0
-            type = 0
-            title = "Title"
-        }
-
-        var tmp3 = EventProperty()
-        tmp2.apply{
-            year = 0
-            month = 0
-            type = 1
-            title = "World"
-        }
-
 
         viewModelScope.launch {
             //database.clearAll()
@@ -89,7 +67,7 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
         }
     }
 
-    fun finishedUpdateFilter(){
+    fun finishedUpdate(){
         _updating.value = false
     }
 
@@ -131,6 +109,19 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     }
     fun openAddView(){
         _openAddView.value = true
+    }
+    fun onDelete (event : EventProperty) {
+        viewModelScope.launch {
+            deleteEvent(event)
+        }
+    }
+    suspend fun deleteEvent(event : EventProperty){
+        withContext(Dispatchers.IO){
+            database.deleteEvent(event.id)
+            updateFilter()
+        }
+        
+
     }
 
 }

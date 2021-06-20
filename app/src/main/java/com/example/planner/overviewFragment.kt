@@ -3,24 +3,20 @@ package com.example.planner
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.planner.databinding.AddEventBinding
 import com.example.planner.databinding.FragmentOverviewBinding
+import com.example.planner.popup.Popup
 import com.example.planner.popup.PopupViewModelFactory
 import com.example.planner.popup.PopupViewModel
 import kotlinx.android.synthetic.main.add_event.view.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
-import java.util.Calendar
-
+import kotlinx.android.synthetic.main.grid_view_item.view.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -40,17 +36,12 @@ class overviewFragment : Fragment() {
             layoutInflater
         )
     }
-    private val popBinding: AddEventBinding by lazy {
-        AddEventBinding.inflate(
-            layoutInflater
-        )
-    }
 
-    lateinit var popUp : PopupWindow
-    lateinit var layout : FrameLayout
+    lateinit var popupView : Popup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -75,34 +66,30 @@ class overviewFragment : Fragment() {
             ).get(EventViewModel::class.java)
 
         binding.viewModel = viewModel
-        var adapter = EventAdapter()
+        var adapter = EventAdapter(EventAdapter.OnClickListener {
+            viewModel.onDelete(it)
+            viewModel.finishedUpdate()
+        })
         binding.recycleView.adapter = adapter
-        val manager = GridLayoutManager(this.activity, 1)
-        binding.recycleView.layoutManager = manager
+        binding.recycleView.layoutManager = GridLayoutManager(this.activity, 1)
 
-        binding.addBtn.setOnClickListener {
-
-        }
         viewModel.updating.observe(viewLifecycleOwner, Observer {
-
             if (it == true) {
-
                 viewModel.events?.let {
                     Log.i("adapter", "detect")
                     adapter.submitList(it)
                 }
-                viewModel.finishedUpdateFilter()
+                viewModel.finishedUpdate()
             }
         })
         viewModel.openAddView.observe(viewLifecycleOwner, Observer {
-
             //MainActivity.onClick()
             Log.i("adapter", "clickAdd")
             binding.rootLayout.foreground.alpha = 220
-            popUp.showAtLocation(view, Gravity.CENTER, 0, 0)
+            popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
 
         })
-        setupPopup(viewModel)
+        setupPopup(viewModel,dataSource)
         setupOverview()
         return binding.root
     }
@@ -119,75 +106,20 @@ class overviewFragment : Fragment() {
 
     }
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setupPopup(viewModel : EventViewModel){
+    fun setupPopup(viewModel : EventViewModel,database : EventDatabaseDAO) {
         val application = requireNotNull(this.activity).application
 
-        val popupviewModelFactory =  PopupViewModelFactory(viewModel,application)
+        val popupviewModelFactory =  PopupViewModelFactory(database,viewModel,application)
 
         val popupModel =
             ViewModelProvider(this,  popupviewModelFactory).get(PopupViewModel::class.java)
-
-        popBinding.lifecycleOwner = this
-        popBinding.viewModel = popupModel
-
-
-
-
-        //popup
         val popupContentView: View =
             LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
-        popUp = PopupWindow(activity!!)
-        layout = FrameLayout(activity!!)
-        popUp.contentView = popupContentView
 
-
-        popUp.setOutsideTouchable(true);
-        popUp.setOnDismissListener {
+        popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!)
+        popupView.popup.setOnDismissListener {
             binding.rootLayout.foreground.alpha = 0
         }
-        popUp.setFocusable(true);
-
-
-
-        //set seekbar
-        val dayBar = popupContentView.day_bar
-        val dayShow = popupContentView.day_show_text
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            dayBar.setMin(1)
-        }
-        dayBar.setMax(31)
-        dayBar.setProgress(1)
-        dayBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            var progressChangedValue = 0
-
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                progressChangedValue = progress;
-                dayShow.text = progressChangedValue.toString()
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                // TODO Auto-generated method stub
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                //dayShow.text = progressChangedValue.toString()
-            }
-        })
-
-
-        //set spinner
-        val spinner : Spinner = popupContentView.add_type
-        var typeList : Array<String> = arrayOf<String>("Info", "Warning", "Emergency")
-
-        val adapterThai: ArrayAdapter<String> = ArrayAdapter<String>(
-            context!!,android.R.layout.simple_expandable_list_item_1,typeList)
-        spinner.setAdapter(adapterThai)
-
-        //set month&year
-        val showMonth : TextView = popupContentView.showMonth
-        /*val idxMonth = 0
-        showMonth.text = viewModel.months.get(idxMonth)*/
-
     }
+
 }

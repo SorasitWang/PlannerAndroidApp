@@ -2,33 +2,50 @@ package com.example.planner.popup
 
 import android.R
 import android.app.Application
+import android.os.Build
+import android.service.autofill.Validators.not
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.SeekBar
-import android.widget.Spinner
-import android.widget.TextView
+import android.view.View
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
+import com.example.planner.EventDatabaseDAO
 import com.example.planner.EventProperty
 import com.example.planner.EventViewModel
 import com.example.planner.databinding.AddEventBinding
 import kotlinx.android.synthetic.main.add_event.view.*
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_overview.view.*
+import kotlinx.android.synthetic.main.grid_view_item.view.*
+import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.concurrent.BlockingDeque
+import kotlin.math.min
 
-class PopupViewModel(val viewModel: EventViewModel,app: Application) : AndroidViewModel(app) {
+class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,app: Application) : AndroidViewModel(app) {
 
     val months = viewModel.months
     val types = viewModel.types
+    val currentMonth = Calendar.getInstance().time.month
+    val currentYear = Calendar.getInstance().time.year + 1900
+    val currentDay = Calendar.getInstance().time.date
+
+    private val _day = MutableLiveData<Int>()
+    val day : LiveData<Int>
+        get() = _day
 
     private val _year = MutableLiveData<Int>()
     val year : LiveData<Int>
         get() = _year
 
-    private var _month = MutableLiveData<String>()
+    private var _month = MutableLiveData<Int>()
     val month : LiveData<String>
-        get() = _month
-        /*Transformations.map(_month){
+        get() = Transformations.map(_month){
         _month.value?.let { it1 -> months.get(it1) }
-    }*/
+    }
+
+    private val _changeM = MutableLiveData<Boolean>()
+    val changeM : LiveData<Boolean>
+        get() = _changeM
 
     /*private var _cat = MutableLiveData<Int>()
     val cat = Transformations.map(_cat){
@@ -42,27 +59,79 @@ class PopupViewModel(val viewModel: EventViewModel,app: Application) : AndroidVi
 
     init {
         Log.i("popup","init")
-        _month.value = "4"  //Calendar.MONTH
-        _year.value = 4 //Calendar.YEAR
+        _month.value = currentMonth  //Calendar.MONTH
+        _year.value = currentYear //Calendar.YEAR
+        _day.value = currentDay
     }
 
-    fun nextMonth(){
-        //_month.value = _month.value!!.plus(1)%months.size
-        Log.i("popup",month.value.toString())
+    fun setBtnMonthYear(popupContentView:View){
+        popupContentView.prevMonth.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                prevMonth()
+            }
+        })
+        popupContentView.nextMonth.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                nextMonth()
+            }
+        })
+        popupContentView.prevYear.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                prevYear()
+            }
+        })
+        popupContentView.nextYear.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                nextYear()
+            }
+        })
+    }
 
+    fun checkMonth(assign : Int){
+        if (year.value!! > currentYear || assign >= currentMonth){
+            _month.value = assign
+        }
+    }
+    fun nextMonth(){
+       checkMonth(_month.value!!.plus(1)%months.size)
+        _changeM.value = true
     }
     fun prevMonth(){
-        //_month.value = _month.value!!.minus(1).plus(months.size)%months.size
-        Log.i("popup",month.value.toString())
+        checkMonth(_month.value!!.minus(1).plus(months.size)%months.size)
+        _changeM.value = true
     }
     fun nextYear(){
         _year.value = _year.value!!.plus(1)
 
     }
     fun prevYear(){
-        _year.value = _year.value!!.minus(1)
+        _year.value = min(_year.value!!.minus(1),currentYear)
 
     }
+    fun finishedChangeM(){
+        _changeM.value = false
+    }
 
+    fun checkDayofMonth(m : String) : Int{
+        if (m in listOf<String>("April","June","November","September")){
+            return 30
+        }
+        return 31
+    }
+    fun insert(popup : View){
+        var tmp = EventProperty()
+        tmp.apply {
+            title = popup.add_title_text.text.toString()
+            detail = popup.add_detail_text.text.toString()
+            type = popup.add_type.selectedItemPosition
+            day = popup.day_show_text.text.toString().toInt()
+            month = months.indexOf(popup.showMonth.text.toString())
+            year = popup.showYear.text.toString().toInt()
+        }
+        viewModelScope.launch {
+            database.insert(tmp)
+        }
+
+    }
 
 }
