@@ -12,7 +12,7 @@ import com.example.planner.databinding.GridViewItemBinding
 import com.example.planner.generated.callback.OnClickListener
 
 
-class EventAdapter(var deleteListener : OnClickListener) : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHolder>(DiffCallback) {
+class EventAdapter(var deleteListener : OnClickListener,var editListener : OnClickListener) : ListAdapter<EventProperty, EventAdapter.EventPropertyViewHolder>(DiffCallback) {
 
     companion object DiffCallback : DiffUtil.ItemCallback<EventProperty>() {
         override fun areItemsTheSame(oldItem: EventProperty, newItem: EventProperty): Boolean {
@@ -24,17 +24,23 @@ class EventAdapter(var deleteListener : OnClickListener) : ListAdapter<EventProp
         }
     }
 
-    class EventPropertyViewHolder(private var binding: GridViewItemBinding,var deleteListener: OnClickListener):
+    class EventPropertyViewHolder(private var binding: GridViewItemBinding,
+                                  var deleteListener: OnClickListener ,
+                                  var editListener: OnClickListener):
         RecyclerView.ViewHolder(binding.root) {
         fun bind(eventProperty: EventProperty) {
             binding.property = eventProperty
             binding.deleteButton.setImageResource(R.drawable.delete)
             binding.editButton.setImageResource(R.drawable.edit)
+
            /* binding.editButton.setOnClickListener{
                 editListener.onClick(eventProperty)
             }*/
             binding.deleteButton.setOnClickListener{
                 deleteListener.onClick(eventProperty)
+            }
+            binding.editButton.setOnClickListener{
+                editListener.onClick(eventProperty)
             }
             binding.executePendingBindings()
         }
@@ -57,7 +63,7 @@ class EventAdapter(var deleteListener : OnClickListener) : ListAdapter<EventProp
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ) , deleteListener
+            ) , deleteListener , editListener
         )
     }
     class OnClickListener(val clickListener: (eventProperty: EventProperty) -> Unit) {

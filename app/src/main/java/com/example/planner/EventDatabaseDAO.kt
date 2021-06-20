@@ -43,6 +43,9 @@ interface EventDatabaseDAO {
     @Query("SELECT * FROM event_table WHERE month = :month AND year = :year AND category = :cat ORDER BY day ASC")
     suspend fun getByCat(month: Int , year : Int,cat : Int): List<EventProperty>
 
+    @Query("SELECT * FROM event_table WHERE id = :id")
+    suspend fun getById(id: Int): EventProperty
+
     @Query("DELETE FROM event_table WHERE month = :month AND year = :year")
     suspend fun clearMonth(month : Int , year : Int)
 

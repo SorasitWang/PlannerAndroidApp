@@ -16,7 +16,9 @@ import com.example.planner.databinding.AddEventBinding
 import kotlinx.android.synthetic.main.add_event.view.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
 import kotlinx.android.synthetic.main.grid_view_item.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.concurrent.BlockingDeque
 import kotlin.math.min
@@ -56,6 +58,14 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     val type = Transformations.map(_type){
         _type.value?.let { it1 -> types.get(it1) }
     }
+
+    private var _eventId = MutableLiveData<EventProperty>()
+    val eventId : LiveData<EventProperty>
+        get() = _eventId
+
+    private var _setDate = MutableLiveData<Boolean>()
+    val setDate : LiveData<Boolean>
+        get() = _setDate
 
     init {
         Log.i("popup","init")
@@ -131,7 +141,28 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
         viewModelScope.launch {
             database.insert(tmp)
         }
-
     }
+    fun onGetById(id :Int) {
+        viewModelScope.launch{
+           getById(id)
+        }
+    }
+    suspend fun getById(id:Int){
+        var tmp : EventProperty
+        withContext(Dispatchers.IO) {
+             tmp = database.getById(id)
+        }
+        _eventId.value = tmp
+    }
+    fun setDate(d:Int,m:Int,y:Int){
+        _month.value = m
+        _day.value = d
+        _year.value = y
+        _setDate.value = true
+    }
+    fun finishedSetDate(){
+        _setDate.value = false
+    }
+
 
 }

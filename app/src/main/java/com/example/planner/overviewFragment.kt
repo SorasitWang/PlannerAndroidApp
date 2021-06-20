@@ -36,7 +36,8 @@ class overviewFragment : Fragment() {
             layoutInflater
         )
     }
-
+    lateinit var popupModel :PopupViewModel
+    lateinit var popupContentView : View
     lateinit var popupView : Popup
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +51,6 @@ class overviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding.rootLayout.foreground.alpha = 0
         binding.lifecycleOwner = this
 
@@ -68,8 +68,10 @@ class overviewFragment : Fragment() {
         binding.viewModel = viewModel
         var adapter = EventAdapter(EventAdapter.OnClickListener {
             viewModel.onDelete(it)
-            viewModel.finishedUpdate()
-        })
+            viewModel.finishedUpdate() },
+            EventAdapter.OnClickListener {
+                viewModel.openEditView(it)}
+        )
         binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = GridLayoutManager(this.activity, 1)
 
@@ -84,12 +86,36 @@ class overviewFragment : Fragment() {
         })
         viewModel.openAddView.observe(viewLifecycleOwner, Observer {
             //MainActivity.onClick()
-            Log.i("adapter", "clickAdd")
-            binding.rootLayout.foreground.alpha = 220
-            popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
-
+            if (it == true) {
+                Log.i("adapter", "clickAdd")
+                setupPopup(viewModel, dataSource,-1)
+                binding.rootLayout.foreground.alpha = 220
+                popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
+                viewModel.finishedOpenAddView()
+            }
         })
-        setupPopup(viewModel,dataSource)
+        viewModel.openEditView.observe(viewLifecycleOwner, Observer {
+            //MainActivity.onClick()
+            if (it != null) {
+                setupPopup(viewModel, dataSource,it)
+                binding.rootLayout.foreground.alpha = 220
+                popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
+                viewModel.finishedOpenEditView()
+            }
+        })
+
+        val popupviewModelFactory =  PopupViewModelFactory(dataSource,viewModel,application)
+
+        popupModel =
+            ViewModelProvider(this,  popupviewModelFactory).get(PopupViewModel::class.java)
+        popupContentView =
+            LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
+        popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,
+            EventProperty()
+        )
+        popupView.popup.setOnDismissListener {
+            binding.rootLayout.foreground.alpha = 0
+        }
         setupOverview()
         return binding.root
     }
@@ -106,20 +132,24 @@ class overviewFragment : Fragment() {
 
     }
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setupPopup(viewModel : EventViewModel,database : EventDatabaseDAO) {
-        val application = requireNotNull(this.activity).application
+    fun setupPopup(viewModel : EventViewModel, database : EventDatabaseDAO,id:Int) {
+        if (id != -1){
+            popupModel.onGetById(id)
+        }
+        else{
+            popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,null)
 
-        val popupviewModelFactory =  PopupViewModelFactory(database,viewModel,application)
-
-        val popupModel =
-            ViewModelProvider(this,  popupviewModelFactory).get(PopupViewModel::class.java)
-        val popupContentView: View =
-            LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
-
-        popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!)
+            }
+        popupModel.eventId.observe(viewLifecycleOwner, Observer {
+            popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,
+                popupModel.eventId.value!!
+            )
+        })
         popupView.popup.setOnDismissListener {
             binding.rootLayout.foreground.alpha = 0
         }
+
+
     }
 
 }

@@ -43,6 +43,11 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     private var _openAddView = MutableLiveData<Boolean>()
     val openAddView : LiveData<Boolean>
         get() = _openAddView
+
+    private var _openEditView = MutableLiveData<Int>()
+    val openEditView : LiveData<Int>
+        get() = _openEditView
+
     var  events = listOf<EventProperty>() //database.getByMonth(_month.value!!, _year.value!!)
     init{
         Log.i("EventViewModel","init")
@@ -110,6 +115,17 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     fun openAddView(){
         _openAddView.value = true
     }
+    fun finishedOpenAddView(){
+        _openAddView.value = false
+    }
+    fun openEditView(event:EventProperty){
+        _openEditView.value = event.id
+    }
+    fun finishedOpenEditView(){
+        _openEditView.value = null
+    }
+
+
     fun onDelete (event : EventProperty) {
         viewModelScope.launch {
             deleteEvent(event)
@@ -120,8 +136,6 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
             database.deleteEvent(event.id)
             updateFilter()
         }
-        
-
     }
 
 }
