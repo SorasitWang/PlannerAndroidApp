@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.planner.Category
-import com.example.planner.EventDatabaseDAO
+import com.example.planner.R
 import com.example.planner.EventProperty
 import kotlinx.android.synthetic.main.add_event.view.*
 import java.util.*
@@ -37,7 +37,12 @@ class Popup(
 
         showMonth.text = popupModel.month.value
         showYear.text = popupModel.year.value.toString()
-
+        popupContentView.apply {
+            prevMonth.setBackgroundResource(R.drawable.left_arrow)
+            prevYear.setBackgroundResource(R.drawable.left_arrow)
+            nextMonth.setBackgroundResource(R.drawable.right_arrow)
+            nextYear.setBackgroundResource(R.drawable.right_arrow)
+        }
         popupModel.setBtnMonthYear(popupContentView)
 
 
