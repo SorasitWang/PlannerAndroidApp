@@ -58,8 +58,8 @@ class overviewFragment : Fragment() {
         val application = requireNotNull(this.activity).application
 
         val dataSource = EventDatabase.getInstance(application).sleepDatabaseDao
-
-        val viewModelFactory = EventViewModelFactory(dataSource, application)
+        val catDatabase = EventDatabase.getInstance(application).catDatabaseDao
+        val viewModelFactory = EventViewModelFactory(dataSource, catDatabase,application)
 
         val viewModel =
             ViewModelProvider(
@@ -106,7 +106,7 @@ class overviewFragment : Fragment() {
             }
         })
 
-        val popupviewModelFactory =  PopupViewModelFactory(dataSource,viewModel,application)
+        val popupviewModelFactory =  PopupViewModelFactory(dataSource,catDatabase,viewModel,application)
 
         popupModel =
             ViewModelProvider(this,  popupviewModelFactory).get(PopupViewModel::class.java)
@@ -115,9 +115,7 @@ class overviewFragment : Fragment() {
         popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,
             EventProperty()
         )
-        popupView.popup.setOnDismissListener {
-            binding.rootLayout.foreground.alpha = 0
-        }
+
         popupModel.updating.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 viewModel.events?.let {
@@ -127,6 +125,17 @@ class overviewFragment : Fragment() {
                 popupModel.finishedUpdate()
             }
         })
+        popupModel.updateCat.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                viewModel.updateCat()
+                viewModel. events?.let {
+                    Log.i("overview", "updateCat")
+                    viewModel.updateFilter()
+                }
+                popupModel.finishedUpdateCat()
+            }
+        })
+
         setupOverview()
         return binding.root
     }
@@ -150,6 +159,10 @@ class overviewFragment : Fragment() {
         }
         else{
             popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,null)
+            popupView.popup.setOnDismissListener {
+                Log.i("ui","dismiss")
+                binding.rootLayout.foreground.alpha = 0
+            }
             }
         popupModel.eventId.observe(viewLifecycleOwner, Observer {
             if (it.id == id) {
@@ -157,6 +170,10 @@ class overviewFragment : Fragment() {
                     popupModel, popupContentView, viewLifecycleOwner, context, activity!!,
                     popupModel.eventId.value!!
                 )
+                popupView.popup.setOnDismissListener {
+                    Log.i("ui","dismiss")
+                    binding.rootLayout.foreground.alpha = 0
+                }
             }
         })
 

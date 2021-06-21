@@ -14,7 +14,7 @@ data class EventProperty(
     var id: Int = 0,
 
     @ColumnInfo(name = "category")
-    var cat: Int = 0,
+    var cat: String = "",
 
     @ColumnInfo(name = "type")
     var type: Int = 0,

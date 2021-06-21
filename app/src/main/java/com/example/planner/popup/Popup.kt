@@ -27,9 +27,11 @@ class Popup(
     val popup = PopupWindow(activity!!)
     init {
 
-        popup.setFocusable(true);
-        popup.setOutsideTouchable(true);
-        popup.contentView = popupContentView
+        popup.apply {
+            setFocusable(true);
+            setOutsideTouchable(true);
+            contentView = popupContentView
+        }
 
         //set month&year
         val showMonth: TextView = popupContentView.showMonth
@@ -43,17 +45,16 @@ class Popup(
             nextMonth.setBackgroundResource(R.drawable.right_arrow)
             nextYear.setBackgroundResource(R.drawable.right_arrow)
         }
-        popupModel.setBtnMonthYear(popupContentView)
-
-
-        popupModel.month.observe(viewLifecycleOwner, Observer {
-            showMonth.text = it
-        })
-        popupModel.year.observe(viewLifecycleOwner, Observer {
-            showYear.text = it.toString()
-        })
-
-        //set seekbar
+        popupModel.apply {
+            setBtnMonthYear(popupContentView)
+            month.observe(viewLifecycleOwner, Observer {
+                showMonth.text = it
+            })
+            year.observe(viewLifecycleOwner, Observer {
+                showYear.text = it.toString()
+            })
+        }
+            //set seekbar
         val dayBar = popupContentView.day_bar
         val dayShow = popupContentView.day_show_text
         var progressChangedValue = 1
@@ -68,7 +69,6 @@ class Popup(
                 progressChangedValue = progress + offset;
                 dayShow.text = progressChangedValue.toString()
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
@@ -110,7 +110,7 @@ class Popup(
 
         //set cat spinner
         val catSpinner: Spinner = popupContentView.select_cat
-        popupModel.onGetAllCat()
+
         popupModel.allCat.observe(viewLifecycleOwner, Observer {
             var catListtmp: Array<Category> = it.toTypedArray()
             var catList = Array(catListtmp.size){""}
@@ -125,22 +125,27 @@ class Popup(
 
         //set add new cat button
         var addCat = false
-        popupContentView.add_cat_btn.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                addCat = true
-                popupContentView.add_cat.visibility = View.VISIBLE
-                popupContentView.select_cat.visibility = View.GONE
-            }
 
-        })
-        //set Submit button
+        popupContentView.add_cat_btn.apply {
+            setBackgroundResource(R.drawable.add)
+            setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View?) {
+                    addCat = true
+                    popupContentView.apply {
+                        add_cat.visibility = View.VISIBLE
+                        select_cat.visibility = View.GONE
+                        add_cat_btn.visibility = View.GONE }
+                }
+            })
+        }
+            //set Submit button
         popupContentView.sunmit_add_btn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (event==null) {
-                    popupModel.insert(popupContentView)
+                    popupModel.insert(popupContentView,addCat)
                 }
                 else{
-                    popupModel.update(popupContentView,event.id)
+                    popupModel.update(popupContentView,event.id,addCat)
                 }
             }
         })
@@ -149,28 +154,28 @@ class Popup(
                 popup.dismiss()
             }
         })
+
         setDefaultValue(event,popupContentView,popupModel,popupContentView)
+        }
+}
 
+    fun setDefaultValue(event: EventProperty?, view:View, model:PopupViewModel,popupContentView:View) {
 
-
-
-    }
-
-    fun setDefaultValue(event: EventProperty?, view:View, model:PopupViewModel,popupContentView:View){
-        if (event == null){
-            Log.i("adpa","null")
-            val curMonth = Calendar.getInstance().time.month
-            val curYear = Calendar.getInstance().time.year + 1900
-            val curDay = Calendar.getInstance().time.date
-
+        if (event == null) {
+            var (curMonth , curYear  , curDay ) = listOf<Int>(0,0,0)
+            Log.i("adpa", "null")
+            Calendar.getInstance().time.apply {
+                curMonth = this.month
+                curYear = this.year + 1900
+                curDay = this.date
+            }
             view.apply {
                 add_title_text.setText(null)
                 add_detail_text.setText(null)
             }
             model.setDate(curDay, curMonth, curYear)
             popupContentView.add_type.setSelection(0)
-        }
-        else {
+        } else {
             view.apply {
                 add_title_text.setText(event.title)
                 add_detail_text.setText(event.detail)
@@ -180,5 +185,4 @@ class Popup(
         }
     }
 
-    //set Edit button
-}
+

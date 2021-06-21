@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidViewModel(app)  {
+class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDatabaseDAO,app: Application): AndroidViewModel(app)  {
     private val _months = listOf<String>("January","February","March","April ","May","June","July","August","September","October","November","December")
     val months : List<String>
         get() = _months
-    private val _cats = listOf<String>("Default")
+    private var _cats = listOf<Category>(Category("Default"))
     private val _types = listOf<String>("Info","Warning","Emergency")
     val types : List<String>
         get() = _types
@@ -28,7 +28,7 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     }
     private var _cat = MutableLiveData<Int>()
     val cat = Transformations.map(_cat){
-        _cat.value?.let { it1 -> _cats.get(it1) }
+        _cat.value?.let { it1 -> _cats.get(it1).cat }
     }
 
     private var _type = MutableLiveData<Int>()
@@ -50,14 +50,16 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
 
     var  events = listOf<EventProperty>() //database.getByMonth(_month.value!!, _year.value!!)
     init{
+
         Log.i("EventViewModel","init")
         _month.value = 0
         _year.value = 2021
         _type.value = 0
         _cat.value = 0
-
+        updateCat()
         viewModelScope.launch {
             //database.clearAll()
+
             events = database.getByMonth(0, 0)
             updateFilter()
         }
@@ -79,11 +81,11 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
     private suspend fun getEvent(m : Int , y : Int,c : Int){
         withContext(Dispatchers.IO) {
             Log.i("adapter","updateFilter")
-            if (_type.value == 0){
+            if (_cat.value == 0){
                 events = database.getByMonth(m, y)
             }
             else {
-                events = database.getByCat(m,y,c)
+                events = database.getByCat(m,y,_cats.get(c).cat)
             }
             if (events == null)  {
                 Log.i("adapter",_month.value.toString() + " , " + _year.value.toString())
@@ -135,6 +137,11 @@ class EventViewModel( val database: EventDatabaseDAO,app: Application): AndroidV
         withContext(Dispatchers.IO){
             database.deleteEvent(event.id)
             updateFilter()
+        }
+    }
+    fun updateCat(){
+        viewModelScope.launch {
+            _cats = catDatabase.getAll()
         }
     }
 

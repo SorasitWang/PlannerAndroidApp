@@ -21,7 +21,7 @@ import java.util.Calendar
 import java.util.concurrent.BlockingDeque
 import kotlin.math.min
 
-class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,app: Application) : AndroidViewModel(app) {
+class PopupViewModel(val database : EventDatabaseDAO,var catDatabase:CatDatabaseDAO,viewModel: EventViewModel,app: Application) : AndroidViewModel(app) {
 
     val months = viewModel.months
     val types = viewModel.types
@@ -29,7 +29,6 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     val currentYear = Calendar.getInstance().time.year + 1900
     val currentDay = Calendar.getInstance().time.date
 
-    lateinit var catDatabase : CatDatabaseDAO
 
     private val _day = MutableLiveData<Int>()
     val day : LiveData<Int>
@@ -74,10 +73,15 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
     private var _allCat = MutableLiveData<List<Category>>()
     val allCat : LiveData<List<Category>>
         get() = _allCat
+    private var _updateCat = MutableLiveData<Boolean>()
+    val updateCat : LiveData<Boolean>
+        get() = _updateCat
+
 
     init {
 
-        catDatabase = EventDatabase.getInstance(app).catDatabaseDao
+
+        onGetAllCat()
         //onInsertCat("Default")
         _month.value = currentMonth  //Calendar.MONTH
         _year.value = currentYear //Calendar.YEAR
@@ -138,38 +142,51 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
         }
         return 31
     }
-    fun insert(popup : View){
+    fun insert(popup : View,addCat: Boolean){
         var tmp = EventProperty()
-        tmp.apply {
-            title = popup.add_title_text.text.toString()
-            detail = popup.add_detail_text.text.toString()
-            type = popup.add_type.selectedItemPosition
-            day = popup.day_show_text.text.toString().toInt()
-            month = months.indexOf(popup.showMonth.text.toString())
-            year = popup.showYear.text.toString().toInt()
-        }
         viewModelScope.launch {
+            tmp.apply {
+                title = popup.add_title_text.text.toString()
+                detail = popup.add_detail_text.text.toString()
+                type = popup.add_type.selectedItemPosition
+                day = popup.day_show_text.text.toString().toInt()
+                month = months.indexOf(popup.showMonth.text.toString())
+                year = popup.showYear.text.toString().toInt()
+                cat = popup.select_cat.selectedItem.toString()
+            }
+            if (addCat && catDatabase.checkExist(popup.add_cat.text.toString()) == null) {
+                insertCat(popup.add_cat.text.toString())
+            }
+            Log.i("database",tmp.cat)
             database.insert(tmp)
             _updating.value = true
         }
     }
-    fun update(popup : View,id:Int){
-        Log.i("database","update")
+    fun update(popup : View,Id:Int,addCat:Boolean){
+
         var tmp = EventProperty()
-        tmp.apply {
-            title =  popup.add_title_text.text.toString()
-            detail = popup.add_detail_text.text.toString()
-            type = popup.add_type.selectedItemPosition
-            day = popup.day_show_text.text.toString().toInt()
-            month = months.indexOf(popup.showMonth.text.toString())
-            year = popup.showYear.text.toString().toInt()
-        }
-        tmp.id = id
+
         viewModelScope.launch {
+            if (addCat && catDatabase.checkExist(popup.add_cat.text.toString()) == null) {
+                insertCat(popup.add_cat.text.toString())
+            }
+            tmp.apply {
+                title = popup.add_title_text.text.toString()
+                detail = popup.add_detail_text.text.toString()
+                type = popup.add_type.selectedItemPosition
+                day = popup.day_show_text.text.toString().toInt()
+                month = months.indexOf(popup.showMonth.text.toString())
+                year = popup.showYear.text.toString().toInt()
+                cat = popup.add_cat.text.toString()
+                id = Id
+            }
+            Log.i("database",tmp.cat)
             database.update(tmp)
             _updating.value = true
+
+            }
         }
-    }
+
     fun finishedUpdate(){
         _updating.value = false
     }
@@ -216,7 +233,10 @@ class PopupViewModel(val database : EventDatabaseDAO, viewModel: EventViewModel,
         withContext(Dispatchers.IO){
             catDatabase.insert(Category(cat))
         }
-
+        _updateCat.value = true
+    }
+    fun finishedUpdateCat(){
+        _updateCat.value = false
     }
 
 

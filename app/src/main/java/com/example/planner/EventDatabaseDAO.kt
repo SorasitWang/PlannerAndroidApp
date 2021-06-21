@@ -41,7 +41,7 @@ interface EventDatabaseDAO {
     suspend fun getByMonth(month: Int , year : Int): List<EventProperty>
 
     @Query("SELECT * FROM event_table WHERE month = :month AND year = :year AND category = :cat ORDER BY day ASC")
-    suspend fun getByCat(month: Int , year : Int,cat : Int): List<EventProperty>
+    suspend fun getByCat(month: Int , year : Int,cat : String): List<EventProperty>
 
     @Query("SELECT * FROM event_table WHERE id = :id")
     suspend fun getById(id: Int): EventProperty
@@ -65,6 +65,9 @@ interface CatDatabaseDAO {
 
     @Query("SELECT * FROM cat_table")
     suspend fun getAll() : List<Category>
+
+    @Query("SELECT * FROM cat_table WHERE cat=:cat")
+    suspend fun checkExist(cat:String) : Category?
 
     @Query("DELETE FROM cat_table WHERE cat = :cat")
     suspend fun delete(cat:String)
