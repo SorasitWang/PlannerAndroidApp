@@ -121,6 +121,7 @@ class Popup(
                 context!!, android.R.layout.simple_expandable_list_item_1, catList
             )
             catSpinner.setAdapter(adapterCat)
+            catSpinner.setSelection(popupModel.allCat.value!!.indexOf(Category(event!!.cat)))
         })
 
         //set add new cat button
@@ -143,9 +144,11 @@ class Popup(
             override fun onClick(v: View?) {
                 if (event==null) {
                     popupModel.insert(popupContentView,addCat)
+                    popup.dismiss()
                 }
                 else{
                     popupModel.update(popupContentView,event.id,addCat)
+                    popup.dismiss()
                 }
             }
         })

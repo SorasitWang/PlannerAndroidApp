@@ -177,10 +177,16 @@ class PopupViewModel(val database : EventDatabaseDAO,var catDatabase:CatDatabase
                 day = popup.day_show_text.text.toString().toInt()
                 month = months.indexOf(popup.showMonth.text.toString())
                 year = popup.showYear.text.toString().toInt()
-                cat = popup.add_cat.text.toString()
+
                 id = Id
             }
-            Log.i("database",tmp.cat)
+            if (addCat == true)
+            {
+                tmp.cat = popup.add_cat.text.toString()
+            }
+            else{
+                tmp.cat = popup.select_cat.selectedItem.toString()
+            }
             database.update(tmp)
             _updating.value = true
 

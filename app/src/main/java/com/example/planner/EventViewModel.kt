@@ -141,7 +141,7 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
     }
     fun updateCat(){
         viewModelScope.launch {
-            _cats = catDatabase.getAll()
+            _cats = listOf<Category>(Category("All")) + catDatabase.getAll()
         }
     }
 

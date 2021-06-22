@@ -99,7 +99,7 @@ class overviewFragment : Fragment() {
         viewModel.openEditView.observe(viewLifecycleOwner, Observer {
             //MainActivity.onClick()
             if (it != null) {
-                setupPopup(viewModel, dataSource,it)
+                setupPopup(viewModel, dataSource,it )
                 binding.rootLayout.foreground.alpha = 220
                 popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
                 viewModel.finishedOpenEditView()
@@ -148,9 +148,8 @@ class overviewFragment : Fragment() {
 
         binding.rightBtnMonth.setImageResource(R.drawable.right_arrow)
         binding.rightBtnType.setImageResource(R.drawable.right_arrow)
-
-
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     fun setupPopup(viewModel : EventViewModel, database : EventDatabaseDAO,id:Int) {
         if (id != -1){
