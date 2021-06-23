@@ -3,9 +3,19 @@ package com.example.planner.manageCat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.planner.CatDatabaseDAO
 import com.example.planner.Category
+import com.example.planner.EventDatabaseDAO
+import kotlinx.coroutines.launch
 
-class CatViewModel : ViewModel() {
+class CatViewModel(var eventDatabase:EventDatabaseDAO , var catDatabase: CatDatabaseDAO) : ViewModel() {
+
+
+    private val _allCat = MutableLiveData<List<Category>>()
+    val allCat : LiveData<List<Category>>
+        get() = _allCat
+
     private val _updating = MutableLiveData<Boolean>(false)
     val updating : LiveData<Boolean>
         get() = _updating
@@ -15,19 +25,36 @@ class CatViewModel : ViewModel() {
         get() = _editView
 
     init{
-
+        getALlCat()
     }
 
-    fun addCat(){
+    fun getALlCat(){
+        viewModelScope.launch {
+            _allCat.value = catDatabase.getAll()
+        }
+    }
+    fun countCatEvent(cat:String){
 
     }
-    fun onDelete(cat : Category){
+    fun addCatView(){
 
+    }
+    fun insertCat(cat :Category){
+        viewModelScope.launch {
+            catDatabase.insert(cat)
+            getALlCat()
+        }
+    }
+    fun onDelete(cat : String){
+        viewModelScope.launch {
+            catDatabase.delete(cat)
+            getALlCat()
+        }
     }
     fun finishedUpdate(){
-        _updating.value = false
+
     }
-    fun editView(cat : Category){
+    fun editView(cat : String){
         _editView.value = true
     }
     fun finishedEditView(){

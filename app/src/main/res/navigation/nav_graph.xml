@@ -9,4 +9,8 @@
         android:id="@+id/overviewFragment"
         android:name="com.example.planner.overviewFragment"
         android:label="overviewFragment" />
+    <fragment
+        android:id="@+id/catFragment"
+        android:name="com.example.planner.manageCat.CatFragment"
+        android:label="CatFragment" />
 </navigation>

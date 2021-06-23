@@ -6,6 +6,9 @@
         <variable
             name="property"
             type="com.example.planner.Category" />
+        <variable
+            name="viewModel"
+            type="com.example.planner.manageCat.CatViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,6 +25,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:text="@{property.cat}"
             tools:text="Default" />
 
         <TextView
@@ -43,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
             android:text="Edit"
+            android:onClick="@{()->viewModel.onDelete(property.cat)}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_edit"
             app:layout_constraintEnd_toStartOf="@+id/cat_edit" />
 
@@ -52,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/medium_dis"
             android:text="Delete"
+            android:onClick="@{()->viewModel.editView(property.cat)}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_amount"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
