@@ -55,6 +55,8 @@ interface EventDatabaseDAO {
     @Query("DELETE FROM event_table")
     suspend fun clearAll()
 
+    @Query("DELETE FROM event_table WHERE category =:cat")
+    suspend fun clearCat(cat:String)
 }
 
 @Dao
