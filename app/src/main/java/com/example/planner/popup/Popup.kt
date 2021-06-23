@@ -20,11 +20,10 @@ class Popup(
     var popupModel: PopupViewModel, popupContentView:View,
     viewLifecycleOwner:LifecycleOwner,
     context: Context?,
-    activity: Activity,
+    popupIn: PopupWindow,
     event: EventProperty?
 ) {
-
-    val popup = PopupWindow(activity!!)
+    var popup = popupIn
     init {
 
         popup.apply {
@@ -121,7 +120,8 @@ class Popup(
                 context!!, android.R.layout.simple_expandable_list_item_1, catList
             )
             catSpinner.setAdapter(adapterCat)
-            catSpinner.setSelection(popupModel.allCat.value!!.indexOf(Category(event!!.cat)))
+            if (event != null)
+                catSpinner.setSelection(popupModel.allCat.value!!.indexOf(Category(event!!.cat)))
         })
 
         //set add new cat button
@@ -142,24 +142,28 @@ class Popup(
             //set Submit button
         popupContentView.sunmit_add_btn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
+                Log.i("ui","clickListenerDismiss")
+                popup.dismiss()
                 if (event==null) {
                     popupModel.insert(popupContentView,addCat)
-                    popup.dismiss()
                 }
                 else{
                     popupModel.update(popupContentView,event.id,addCat)
-                    popup.dismiss()
                 }
+
             }
         })
         popupModel.updating.observe(viewLifecycleOwner, Observer {
             if (it==true){
-                popup.dismiss()
+                //Log.i("ui","popupDismiss")
+                //popup.dismiss()
             }
         })
 
         setDefaultValue(event,popupContentView,popupModel,popupContentView)
+
         }
+
 }
 
     fun setDefaultValue(event: EventProperty?, view:View, model:PopupViewModel,popupContentView:View) {

@@ -1,5 +1,6 @@
 package com.example.planner
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,6 @@ import com.example.planner.popup.PopupViewModel
 import kotlinx.android.synthetic.main.add_event.view.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
 import kotlinx.android.synthetic.main.grid_view_item.view.*
-import java.io.ObjectStreamException
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,9 +37,9 @@ class overviewFragment : Fragment() {
             layoutInflater
         )
     }
-    lateinit var popupModel :PopupViewModel
-    lateinit var popupContentView : View
-    lateinit var popupView : Popup
+    lateinit var popupModel: PopupViewModel
+    lateinit var popupContentView: View
+    lateinit var popupView: Popup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +59,7 @@ class overviewFragment : Fragment() {
 
         val dataSource = EventDatabase.getInstance(application).sleepDatabaseDao
         val catDatabase = EventDatabase.getInstance(application).catDatabaseDao
-        val viewModelFactory = EventViewModelFactory(dataSource, catDatabase,application)
+        val viewModelFactory = EventViewModelFactory(dataSource, catDatabase, application)
 
         val viewModel =
             ViewModelProvider(
@@ -69,9 +69,11 @@ class overviewFragment : Fragment() {
         binding.viewModel = viewModel
         var adapter = EventAdapter(EventAdapter.OnClickListener {
             viewModel.onDelete(it)
-            viewModel.finishedUpdate() },
+            viewModel.finishedUpdate()
+        },
             EventAdapter.OnClickListener {
-                viewModel.openEditView(it)}
+                viewModel.openEditView(it)
+            }
         )
         binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = GridLayoutManager(this.activity, 1)
@@ -89,37 +91,44 @@ class overviewFragment : Fragment() {
         viewModel.openAddView.observe(viewLifecycleOwner, Observer {
             //MainActivity.onClick()
             if (it == true) {
-                Log.i("adapter", "clickAdd")
-                setupPopup(viewModel, dataSource,-1)
+                Log.i("ui", "clickAdd")
+                setupPopup(viewModel, dataSource, null)
                 binding.rootLayout.foreground.alpha = 220
-                popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
-                viewModel.finishedOpenAddView()
+                if (!activity?.isFinishing()!!) {
+                    popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
+                    viewModel.finishedOpenAddView()
+                }
+
             }
         })
+
         viewModel.openEditView.observe(viewLifecycleOwner, Observer {
             //MainActivity.onClick()
             if (it != null) {
-                setupPopup(viewModel, dataSource,it )
+                Log.i("ui", "clickEdit")
+                setupPopup(viewModel, dataSource, it)
                 binding.rootLayout.foreground.alpha = 220
-                popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
-                viewModel.finishedOpenEditView()
+                if (!activity?.isFinishing()!!) {
+                    popupView.popup.showAtLocation(view, Gravity.CENTER, 0, 0)
+                    viewModel.finishedOpenAddView()
+                }
+
+
             }
         })
 
-        val popupviewModelFactory =  PopupViewModelFactory(dataSource,catDatabase,viewModel,application)
+        val popupviewModelFactory =
+            PopupViewModelFactory(dataSource, catDatabase, viewModel, application)
 
         popupModel =
-            ViewModelProvider(this,  popupviewModelFactory).get(PopupViewModel::class.java)
+            ViewModelProvider(this, popupviewModelFactory).get(PopupViewModel::class.java)
         popupContentView =
             LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
-        popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,
-            EventProperty()
-        )
 
         popupModel.updating.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 viewModel.events?.let {
-                    Log.i("adapter", "detectUpdate")
+                    Log.i("ui", "detectUpdate")
                     viewModel.updateFilter()
                 }
                 popupModel.finishedUpdate()
@@ -128,7 +137,7 @@ class overviewFragment : Fragment() {
         popupModel.updateCat.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 viewModel.updateCat()
-                viewModel. events?.let {
+                viewModel.events?.let {
                     Log.i("overview", "updateCat")
                     viewModel.updateFilter()
                 }
@@ -151,33 +160,17 @@ class overviewFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setupPopup(viewModel : EventViewModel, database : EventDatabaseDAO,id:Int) {
-        if (id != -1){
-            popupModel.onGetById(id)
+    fun setupPopup(viewModel: EventViewModel, database: EventDatabaseDAO, e: EventProperty?) {
+            val popup = PopupWindow(requireActivity())
+            popupView = Popup(
+                popupModel, popupContentView, viewLifecycleOwner, context,popup,e)
 
-        }
-        else{
-            popupView = Popup(popupModel,popupContentView,viewLifecycleOwner,context,activity!!,null)
             popupView.popup.setOnDismissListener {
                 Log.i("ui","dismiss")
                 binding.rootLayout.foreground.alpha = 0
             }
-            }
-        popupModel.eventId.observe(viewLifecycleOwner, Observer {
-            if (it.id == id) {
-                popupView = Popup(
-                    popupModel, popupContentView, viewLifecycleOwner, context, activity!!,
-                    popupModel.eventId.value!!
-                )
-                popupView.popup.setOnDismissListener {
-                    Log.i("ui","dismiss")
-                    binding.rootLayout.foreground.alpha = 0
-                }
-            }
-        })
-
-
 
     }
+
 
 }

@@ -44,8 +44,8 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
     val openAddView : LiveData<Boolean>
         get() = _openAddView
 
-    private var _openEditView = MutableLiveData<Int>()
-    val openEditView : LiveData<Int>
+    private var _openEditView = MutableLiveData<EventProperty>()
+    val openEditView : LiveData<EventProperty>
         get() = _openEditView
 
     var  events = listOf<EventProperty>() //database.getByMonth(_month.value!!, _year.value!!)
@@ -121,7 +121,7 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
         _openAddView.value = false
     }
     fun openEditView(event:EventProperty){
-        _openEditView.value = event.id
+        _openEditView.value = event
     }
     fun finishedOpenEditView(){
         _openEditView.value = null
