@@ -43,3 +43,7 @@ fun TextView.intToString(data : Int){
     text = data.toString()
 }
 
+@BindingAdapter("showTotal")
+fun TextView.showTotal(data : Int){
+    setText("Total " +data.toString())
+}

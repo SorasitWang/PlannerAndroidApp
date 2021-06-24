@@ -37,11 +37,11 @@ class CatFragment : Fragment() {
         binding.viewModel = viewModel
         var adapter = CatAdapter(
             CatAdapter.OnClickListener {
-            viewModel.onDelete(it.cat)
+            viewModel.onDelete(it.category)
             viewModel.finishedUpdate()
         },
             CatAdapter.OnClickListener {
-                viewModel.editView(it.cat)
+                viewModel.editView(it.category)
             }
         )
         binding.recycleCat.adapter = adapter

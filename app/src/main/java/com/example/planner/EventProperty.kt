@@ -39,3 +39,8 @@ data class Category(
     @PrimaryKey(autoGenerate = false)
     var cat : String = ""
 )
+
+data class StringInt(
+    var category : String = "",
+    var count : Int = 0
+)

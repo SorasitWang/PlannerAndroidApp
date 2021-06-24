@@ -7,13 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.planner.CatDatabaseDAO
 import com.example.planner.Category
 import com.example.planner.EventDatabaseDAO
+import com.example.planner.StringInt
 import kotlinx.coroutines.launch
 
-class CatViewModel(var eventDatabase:EventDatabaseDAO , var catDatabase: CatDatabaseDAO) : ViewModel() {
+class CatViewModel(val eventDatabase:EventDatabaseDAO , val catDatabase: CatDatabaseDAO) : ViewModel() {
 
 
-    private val _allCat = MutableLiveData<List<Category>>()
-    val allCat : LiveData<List<Category>>
+    private val _allCat = MutableLiveData<List<StringInt>>()
+    val allCat : LiveData<List<StringInt>>
         get() = _allCat
 
     private val _updating = MutableLiveData<Boolean>(false)
@@ -30,11 +31,11 @@ class CatViewModel(var eventDatabase:EventDatabaseDAO , var catDatabase: CatData
 
     fun getALlCat(){
         viewModelScope.launch {
-            _allCat.value = catDatabase.getAll()
+            _allCat.value = eventDatabase.countByCat()
         }
     }
     fun countCatEvent(cat:String){
-
+        return
     }
     fun addCatView(){
 

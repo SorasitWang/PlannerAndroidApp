@@ -8,27 +8,28 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planner.Category
+import com.example.planner.StringInt
 import com.example.planner.databinding.CatItemBinding
 import org.jetbrains.annotations.NotNull
 
 
-class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClickListener) : ListAdapter<Category, CatAdapter.EventPropertyViewHolder>(DiffCallback) {
+class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClickListener) : ListAdapter<StringInt, CatAdapter.CatPropertyViewHolder>(DiffCallback) {
 
-    companion object DiffCallback : DiffUtil.ItemCallback<Category>() {
-        override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<StringInt>() {
+        override fun areItemsTheSame(oldItem: StringInt, newItem: StringInt): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: Category, newItem:Category): Boolean {
-            return oldItem.cat== newItem.cat
+        override fun areContentsTheSame(oldItem: StringInt, newItem:StringInt): Boolean {
+            return oldItem.category== newItem.category
         }
     }
 
-    class EventPropertyViewHolder(private var binding: CatItemBinding,
+    class CatPropertyViewHolder(private var binding: CatItemBinding,
                                   var deleteListener: OnClickListener,
                                   var editListener: OnClickListener):
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(property: Category) {
+        fun bind(property: StringInt) {
             binding.property = property
 
             /* binding.editButton.setOnClickListener{
@@ -44,19 +45,19 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
         }
     }
 
-    override fun onBindViewHolder(holder: EventPropertyViewHolder, position: Int) {
-        val eventProperty = getItem(position)
+    override fun onBindViewHolder(holder: CatPropertyViewHolder, position: Int) {
+        val catProperty = getItem(position)
         Log.i("adapter", "bind")
-        holder.bind(eventProperty)
+        holder.bind(catProperty)
 
 
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            EventPropertyViewHolder {
+            CatPropertyViewHolder {
         Log.i("adapter", "create")
-        return EventPropertyViewHolder(
+        return CatPropertyViewHolder(
             CatItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -64,7 +65,7 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
             ) , deleteListener , editListener
         )
     }
-    class OnClickListener(val clickListener: (eventProperty: Category) -> Unit) {
-        fun onClick(eventProperty:Category) = clickListener(eventProperty)
+    class OnClickListener(val clickListener: (eventProperty: StringInt) -> Unit) {
+        fun onClick(eventProperty:StringInt) = clickListener(eventProperty)
     }
 }

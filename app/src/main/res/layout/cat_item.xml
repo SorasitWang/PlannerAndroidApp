@@ -5,7 +5,7 @@
     <data>
         <variable
             name="property"
-            type="com.example.planner.Category" />
+            type="com.example.planner.StringInt" />
         <variable
             name="viewModel"
             type="com.example.planner.manageCat.CatViewModel" />
@@ -18,28 +18,27 @@
             android:id="@+id/cat_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_dis"
+            android:layout_marginStart="@dimen/small_dis"
+            android:text="@{property.category}"
             android:textSize="@dimen/title_event"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="@{property.cat}"
             tools:text="Default" />
 
         <TextView
             android:id="@+id/cat_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_dis"
-            android:layout_marginEnd="@dimen/medium_dis"
+            android:layout_marginStart="120dp"
             android:textSize="@dimen/normal_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cat_delete"
-            app:layout_constraintStart_toEndOf="@+id/cat_name"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Total Event : 8" />
+            app:showTotal="@{property.count}"
+            tools:text="Total : 8" />
 
         <Button
             android:id="@+id/cat_delete"
@@ -47,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
             android:text="Edit"
-            android:onClick="@{()->viewModel.onDelete(property.cat)}"
+            android:onClick="@{()->viewModel.onDelete(property.category)}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_edit"
             app:layout_constraintEnd_toStartOf="@+id/cat_edit" />
 
@@ -55,9 +54,9 @@
             android:id="@+id/cat_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/medium_dis"
+            android:layout_marginEnd="@dimen/small_dis"
+            android:onClick="@{()->viewModel.editView(property.category)}"
             android:text="Delete"
-            android:onClick="@{()->viewModel.editView(property.cat)}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_amount"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
