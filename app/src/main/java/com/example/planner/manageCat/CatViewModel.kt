@@ -1,5 +1,6 @@
 package com.example.planner.manageCat
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,9 +47,14 @@ class CatViewModel(val eventDatabase:EventDatabaseDAO , val catDatabase: CatData
             getALlCat()
         }
     }
+    fun tmp(){
+        Log.i("database","tmp")
+    }
     fun onDelete(cat : String){
+        Log.i("database",cat)
         viewModelScope.launch {
             catDatabase.delete(cat)
+            eventDatabase.clearCat(cat)
             getALlCat()
         }
     }

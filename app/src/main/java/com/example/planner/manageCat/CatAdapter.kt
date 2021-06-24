@@ -36,10 +36,10 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
                  editListener.onClick(eventProperty)
              }*/
             binding.catEdit.setOnClickListener{
-                deleteListener.onClick(property)
+                editListener.onClick(property)
             }
             binding.catDelete.setOnClickListener{
-                editListener.onClick(property)
+                deleteListener.onClick(property)
             }
             binding.executePendingBindings()
         }

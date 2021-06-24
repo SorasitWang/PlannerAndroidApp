@@ -45,8 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
-            android:text="Edit"
-            android:onClick="@{()->viewModel.onDelete(property.category)}"
+            android:text="Delete"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_edit"
             app:layout_constraintEnd_toStartOf="@+id/cat_edit" />
 
@@ -55,8 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
-            android:onClick="@{()->viewModel.editView(property.category)}"
-            android:text="Delete"
+            android:text="Edit"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_amount"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
