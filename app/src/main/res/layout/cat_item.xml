@@ -9,6 +9,9 @@
         <variable
             name="viewModel"
             type="com.example.planner.manageCat.CatViewModel" />
+        <variable
+            name="adapter"
+            type="com.example.planner.manageCat.CatAdapter.CatPropertyViewHolder" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -45,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
-            android:text="Delete"
+            android:text="@{adapter.deleteText}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_edit"
             app:layout_constraintEnd_toStartOf="@+id/cat_edit" />
 
@@ -54,9 +57,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_dis"
-            android:text="Edit"
+            android:text="@{adapter.editText}"
             app:layout_constraintBaseline_toBaselineOf="@+id/cat_amount"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/cat_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_dis"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textSize="@dimen/title_event"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="ChangeCat" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -60,6 +60,9 @@ interface EventDatabaseDAO {
 
     @Query("SELECT category , COUNT(*) AS count FROM event_table WHERE category is not null GROUP BY category")
     suspend fun countByCat() : List<StringInt>
+
+    @Query("UPDATE event_table SET category=:newCat WHERE category=:oldCat")
+    suspend fun changeCat(oldCat:String , newCat :String)
 }
 
 @Dao
@@ -76,6 +79,8 @@ interface CatDatabaseDAO {
 
     @Query("DELETE FROM cat_table WHERE cat = :cat")
     suspend fun delete(cat:String)
+
+
 
 }
 
