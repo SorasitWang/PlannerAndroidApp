@@ -36,11 +36,12 @@ class CatFragment : Fragment() {
         viewModel =   ViewModelProvider(this, viewModelFactory).get(CatViewModel::class.java)
         binding.viewModel = viewModel
         var adapter = CatAdapter(
-            CatAdapter.OnClickListener {
+            CatAdapter.OnClickListener{it,string->
             viewModel.onDelete(it.category)
             viewModel.finishedUpdate()
         },
-            CatAdapter.OnClickListener {
+            CatAdapter.OnClickListener {it,string->
+                viewModel.changeCat(string,it.category)
                 viewModel.editView(it.category)
             }
         )

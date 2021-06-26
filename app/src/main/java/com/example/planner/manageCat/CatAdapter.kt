@@ -12,6 +12,7 @@ import com.example.planner.Category
 import com.example.planner.StringInt
 import com.example.planner.databinding.CatItemBinding
 import org.jetbrains.annotations.NotNull
+import java.util.prefs.NodeChangeListener
 
 
 class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClickListener) : ListAdapter<StringInt, CatAdapter.CatPropertyViewHolder>(DiffCallback) {
@@ -49,7 +50,7 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
                 if (editing == true){
                     showInput(false)
                     editing = false
-                    editListener.onClick(property)
+                    editListener.onClick(property,binding.catInput.text.toString())
                 }
                 else {
 
@@ -64,7 +65,7 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
                     editing = false
                 }
                 else {
-                    deleteListener.onClick(property)
+                    deleteListener.onClick(property,"")
                 }
             }
             binding.executePendingBindings()
@@ -107,8 +108,8 @@ class CatAdapter(var deleteListener : OnClickListener,var editListener : OnClick
         return holder
 
     }
-    class OnClickListener(val clickListener: (eventProperty: StringInt) -> Unit) {
-        fun onClick(eventProperty:StringInt) = clickListener(eventProperty)
+    class OnClickListener(val clickListener: (eventProperty: StringInt,string:String) -> Unit) {
+        fun onClick(eventProperty:StringInt,string:String) = clickListener(eventProperty,string)
     }
 
 

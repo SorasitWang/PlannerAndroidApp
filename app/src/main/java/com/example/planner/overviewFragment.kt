@@ -40,7 +40,7 @@ class overviewFragment : Fragment() {
     lateinit var popupModel: PopupViewModel
     lateinit var popupContentView: View
     lateinit var popupView: Popup
-
+    lateinit var viewModel : EventViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,6 +52,7 @@ class overviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding.rootLayout.foreground.alpha = 0
         binding.lifecycleOwner = this
 
@@ -61,7 +62,7 @@ class overviewFragment : Fragment() {
         val catDatabase = EventDatabase.getInstance(application).catDatabaseDao
         val viewModelFactory = EventViewModelFactory(dataSource, catDatabase, application)
 
-        val viewModel =
+        viewModel =
             ViewModelProvider(
                 this, viewModelFactory
             ).get(EventViewModel::class.java)
@@ -147,6 +148,12 @@ class overviewFragment : Fragment() {
 
         setupOverview()
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("Main","onStart")
+        viewModel.updateCat()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

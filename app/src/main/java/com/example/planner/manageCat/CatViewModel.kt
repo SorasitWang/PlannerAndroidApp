@@ -27,10 +27,10 @@ class CatViewModel(val eventDatabase:EventDatabaseDAO , val catDatabase: CatData
         get() = _editView
 
     init{
-        getALlCat()
+        getAllCat()
     }
 
-    fun getALlCat(){
+    fun getAllCat(){
         viewModelScope.launch {
             _allCat.value = eventDatabase.countByCat()
         }
@@ -44,7 +44,7 @@ class CatViewModel(val eventDatabase:EventDatabaseDAO , val catDatabase: CatData
     fun insertCat(cat :Category){
         viewModelScope.launch {
             catDatabase.insert(cat)
-            getALlCat()
+            getAllCat()
         }
     }
     fun tmp(){
@@ -55,10 +55,20 @@ class CatViewModel(val eventDatabase:EventDatabaseDAO , val catDatabase: CatData
         viewModelScope.launch {
             catDatabase.delete(cat)
             eventDatabase.clearCat(cat)
-            getALlCat()
+            getAllCat()
         }
     }
     fun finishedUpdate(){
+
+    }
+    fun changeCat(newCat:String,oldCat:String){
+        viewModelScope.launch {
+            eventDatabase.changeCat(oldCat,newCat)
+            catDatabase.delete(oldCat)
+            catDatabase.insert(Category(newCat))
+            getAllCat()
+        }
+
 
     }
     fun editView(cat : String){

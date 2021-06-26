@@ -13,7 +13,7 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
     private val _months = listOf<String>("January","February","March","April ","May","June","July","August","September","October","November","December")
     val months : List<String>
         get() = _months
-    private var _cats = listOf<Category>(Category("Default"))
+    private var _cats = listOf<Category>(Category("All"))
     private val _types = listOf<String>("Info","Warning","Emergency")
     val types : List<String>
         get() = _types
@@ -142,6 +142,7 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
     fun updateCat(){
         viewModelScope.launch {
             _cats = listOf<Category>(Category("All")) + catDatabase.getAll()
+            _cat.value = 0
         }
     }
 
