@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -125,9 +126,10 @@ class overviewFragment : Fragment() {
             ViewModelProvider(this, popupviewModelFactory).get(PopupViewModel::class.java)
         popupContentView =
             LayoutInflater.from(this.activity).inflate(R.layout.add_event, null)
-
+        val animFadein = AnimationUtils.loadAnimation(context, R.anim.floating);
         popupModel.updating.observe(viewLifecycleOwner, Observer {
             if (it == true) {
+
                 viewModel.events?.let {
                     Log.i("ui", "detectUpdate")
                     viewModel.updateFilter()
@@ -145,7 +147,9 @@ class overviewFragment : Fragment() {
                 popupModel.finishedUpdateCat()
             }
         })
-
+        viewModel.month.observe(viewLifecycleOwner, Observer {
+            binding.monthText.startAnimation(animFadein)
+        })
         setupOverview()
         return binding.root
     }

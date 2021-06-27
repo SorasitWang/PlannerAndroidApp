@@ -13,4 +13,8 @@
         android:id="@+id/catFragment"
         android:name="com.example.planner.manageCat.CatFragment"
         android:label="CatFragment" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.planner.login.loginFragment"
+        android:label="loginFragment" />
 </navigation>

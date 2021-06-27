@@ -3,6 +3,7 @@ package com.example.planner
 import android.app.Application
 import android.app.usage.UsageEvents
 import android.util.Log
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +50,9 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
         get() = _openEditView
 
     var  events = listOf<EventProperty>() //database.getByMonth(_month.value!!, _year.value!!)
+
+
+
     init{
 
         Log.i("EventViewModel","init")
@@ -145,5 +149,6 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
             _cat.value = 0
         }
     }
+
 
 }
