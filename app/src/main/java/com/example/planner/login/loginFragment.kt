@@ -1,18 +1,28 @@
 package com.example.planner.login
 
-import androidx.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.planner.R
+import com.example.planner.databinding.CatFragmentBinding
+import com.example.planner.databinding.LoginFragmentBinding
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 class loginFragment : Fragment() {
 
     companion object {
         fun newInstance() = loginFragment()
     }
+    private lateinit var binding : LoginFragmentBinding
 
     private lateinit var viewModel: LoginViewModel
 
@@ -20,13 +30,33 @@ class loginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.login_fragment, container, false)
+        binding = LoginFragmentBinding.inflate(layoutInflater)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        binding.viewModel = viewModel
+        viewModel.submit.observe(viewLifecycleOwner, Observer {
+            if (it == true){
+                viewModel.logIn(binding.inputUser.text.toString(),binding.inputPassword.text.toString())
+                viewModel.finishedSubmit()
+            }
+        })
+        viewModel.valid.observe(viewLifecycleOwner, Observer {
+            if (it == false)
+                Toast.makeText(context,"Invalid username or password", Toast.LENGTH_SHORT).show()
+            else{
+
+            }
+
+        })
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+
         // TODO: Use the ViewModel
     }
+
+
 
 }

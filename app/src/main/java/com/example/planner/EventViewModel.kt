@@ -127,9 +127,6 @@ class EventViewModel( val database: EventDatabaseDAO, var catDatabase: CatDataba
     fun openEditView(event:EventProperty){
         _openEditView.value = event
     }
-    fun finishedOpenEditView(){
-        _openEditView.value = null
-    }
 
 
     fun onDelete (event : EventProperty) {

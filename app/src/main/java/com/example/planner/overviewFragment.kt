@@ -1,6 +1,7 @@
 package com.example.planner
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.planner.databinding.FragmentOverviewBinding
+import com.example.planner.login.LoginActivity
 import com.example.planner.popup.Popup
 import com.example.planner.popup.PopupViewModelFactory
 import com.example.planner.popup.PopupViewModel
@@ -182,6 +184,5 @@ class overviewFragment : Fragment() {
             }
 
     }
-
 
 }
