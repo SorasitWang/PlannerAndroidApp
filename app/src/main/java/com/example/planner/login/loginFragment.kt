@@ -34,19 +34,24 @@ class loginFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.submit.observe(viewLifecycleOwner, Observer {
-            if (it == true){
-                viewModel.logIn(binding.inputUser.text.toString(),binding.inputPassword.text.toString())
-                viewModel.finishedSubmit()
+            if (viewModel.signUpMode.value==false) {
+                if (it == true){
+                    viewModel.logIn(binding.inputUser.text.toString(),binding.inputPassword.text.toString())
+                    viewModel.finishedSubmit()
+                }
             }
+            else{
+                viewModel.checkExist(binding.inputUser.toString(),binding.inputPassword.toString())
+            }
+
         })
         viewModel.valid.observe(viewLifecycleOwner, Observer {
             if (it == false)
                 Toast.makeText(context,"Invalid username or password", Toast.LENGTH_SHORT).show()
             else{
-
             }
-
         })
+
 
         return binding.root
     }
